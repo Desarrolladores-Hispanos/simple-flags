@@ -1,0 +1,6 @@
+plugins:
+  simple_flags_enabled:
+    default: true
+  default_flags_required:
+    type: integer
+    default: 5

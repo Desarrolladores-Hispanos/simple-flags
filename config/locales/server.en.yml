@@ -1,0 +1,4 @@
+en:
+  site_settings:
+    simple_flags_enabled: "enable simpler flagging system (without score)?"
+    default_flags_required: "number of flags if none are provided for the category?"
