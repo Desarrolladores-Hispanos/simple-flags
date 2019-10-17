@@ -1,5 +1,5 @@
 # name: simple-flags
-# version: 1.0.0
+# version: 1.0.1
 # authors: boyned/Kampfkarren
 
 # enabled_site_setting :simple_flags_enabled
@@ -30,7 +30,13 @@ after_initialize do
 
       return if @post.hidden?
       return if !@created_by.staff? && @post.user&.staff?
-      if PostAction.where(post_id: @post.id).count >= @post.topic.category.flags_to_hide_post
+
+      count = PostAction
+        .where(post_id: @post.id)
+        .where(post_action_type_id: PostActionType.notify_flag_type_ids)
+        .count
+
+      if count >= @post.topic.category.flags_to_hide_post
         @post.hide!(@post_action_type_id)
       end
     end
