@@ -36,7 +36,7 @@ after_initialize do
         .where(post_action_type_id: PostActionType.notify_flag_type_ids)
         .count
 
-      if count >= @post.topic.category.flags_to_hide_post
+      if count >= (@post.topic.category&.flags_to_hide_post || SiteSetting.default_flags_required)
         @post.hide!(@post_action_type_id)
       end
     end
