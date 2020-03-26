@@ -1,8 +1,8 @@
 # name: simple-flags
-# version: 1.0.1
-# authors: boyned/Kampfkarren
+# version: 1.1.0
+# authors: boyned/Kampfkarren, buildthomas
 
-# enabled_site_setting :simple_flags_enabled
+enabled_site_setting :simple_flags_enabled
 
 after_initialize do
   require_dependency "category"
@@ -15,30 +15,34 @@ after_initialize do
 
   class ::Category
     def flags_to_hide_post
-      self.custom_fields["flags_to_hide_post"] || SiteSetting.default_flags_required
+      self.custom_fields["flags_to_hide_post"]
     end
   end
 
-  PostActionCreator.module_eval do
-    alias_method :prev_auto_hide_if_needed, :auto_hide_if_needed
+  module PostActionCreatorInterceptor
 
     def auto_hide_if_needed
-      if not SiteSetting.simple_flags_enabled
-        prev_auto_hide_if_needed
-        return
-      end
-
+      return super unless SiteSetting.simple_flags_enabled
+      
       return if @post.hidden?
       return if !@created_by.staff? && @post.user&.staff?
+
+      threshold = @post.topic.category&.flags_to_hide_post
+      threshold = SiteSetting.default_flags_required unless threshold && threshold > 0
 
       count = PostAction
         .where(post_id: @post.id)
         .where(post_action_type_id: PostActionType.notify_flag_type_ids)
+        .where(deleted_at: nil)
+        .where(disagreed_at: nil)
+        .where(deferred_at: nil)
         .count
 
-      if count >= (@post.topic.category&.flags_to_hide_post || SiteSetting.default_flags_required)
-        @post.hide!(@post_action_type_id)
-      end
+      @post.hide!(@post_action_type_id) if count >= threshold
     end
+
   end
+
+  PostActionCreator.send(:prepend, PostActionCreatorInterceptor)
+
 end
