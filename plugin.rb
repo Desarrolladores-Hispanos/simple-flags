@@ -19,15 +19,11 @@ after_initialize do
     end
   end
 
-  PostActionCreator.module_eval do
-    alias_method :prev_auto_hide_if_needed, :auto_hide_if_needed
+  module PostActionCreatorInterceptor
 
     def auto_hide_if_needed
-      if not SiteSetting.simple_flags_enabled
-        prev_auto_hide_if_needed
-        return
-      end
-
+      return super unless SiteSetting.simple_flags_enabled
+      
       return if @post.hidden?
       return if !@created_by.staff? && @post.user&.staff?
 
@@ -41,5 +37,9 @@ after_initialize do
 
       @post.hide!(@post_action_type_id) if count >= threshold
     end
+
   end
+
+  PostActionCreator.send(:prepend, PostActionCreatorInterceptor)
+
 end
