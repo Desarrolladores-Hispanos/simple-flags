@@ -2,7 +2,7 @@
 # version: 1.1.0
 # authors: boyned/Kampfkarren, buildthomas
 
-# enabled_site_setting :simple_flags_enabled
+enabled_site_setting :simple_flags_enabled
 
 after_initialize do
   require_dependency "category"
