@@ -1,6 +1,6 @@
 # name: simple-flags
-# version: 1.0.1
-# authors: boyned/Kampfkarren
+# version: 1.1.0
+# authors: boyned/Kampfkarren, buildthomas
 
 # enabled_site_setting :simple_flags_enabled
 
@@ -33,6 +33,9 @@ after_initialize do
       count = PostAction
         .where(post_id: @post.id)
         .where(post_action_type_id: PostActionType.notify_flag_type_ids)
+        .where(deleted_at: nil)
+        .where(disagreed_at: nil)
+        .where(deferred_at: nil)
         .count
 
       @post.hide!(@post_action_type_id) if count >= threshold
