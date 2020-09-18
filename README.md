@@ -59,3 +59,5 @@ Inside the function, the original function is invoked if the plugin is disabled,
 The default number of flags required to hide a post can be configured via the `default_flags_required` setting (default: 5).
 
 Furthermore, the threshold can be overridden on a per-category basis, by setting Settings > "Number of flags required to hide post". To use the forum-wide threshold again, simply clear this value.
+
+#### Copyright 2020 Roblox Corporation
