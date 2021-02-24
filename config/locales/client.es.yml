@@ -1,0 +1,4 @@
+es:
+  js:
+    category:
+      flags_to_hide_post: "Número de flags requeridos para ocultar publicación"
