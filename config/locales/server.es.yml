@@ -1,0 +1,4 @@
+es:
+  site_settings:
+    simple_flags_enabled: "¿habilitar sistema de reportes sencillos (sin puntaje)?"
+    default_flags_required: "¿número de reportes si ninguno está proporcionado para la categoría?"
